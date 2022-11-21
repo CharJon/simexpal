@@ -38,8 +38,7 @@ class QueueLauncher(common.Launcher):
 		with os.fdopen(specfd, 'w') as f:
 			util.write_yaml_file(f, specs)
 
-		print("Submitting run {}/{}[{}] with queue jobid '{}' to local queue launcher".format(
-				run.experiment.display_name, run.instance.shortname, run.repetition, queue_jobid))
+		print(f"Submitting run {run.display_nam} with queue jobid '{queue_jobid}' to local queue launcher")
 
 		queuesock.sendrecv({
 			'action': 'launch',

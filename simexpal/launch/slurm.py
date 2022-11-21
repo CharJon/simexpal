@@ -32,6 +32,13 @@ class SlurmLauncher(common.Launcher):
 		for grp_exp, grp_runs in groups.items():
 			self._do_submit(cfg, grp_exp, grp_runs)
 
+	def _submit_print_messsage(self, run, queue):
+		if queue:
+			return f"Submitting run {run.display_name} to slurm partition '{self.queue}'"
+		else:
+			return f"Submitting run {run.display_name} to slurm"
+
+
 	def _do_submit(self, cfg, experiment, runs):
 		util.try_mkdir(os.path.join(cfg.basedir, 'aux'))
 		util.try_mkdir(os.path.join(cfg.basedir, 'aux/_slurm'))
@@ -145,11 +152,9 @@ class SlurmLauncher(common.Launcher):
 		# Finally start the run.
 		for run in locked:
 			if self.queue:
-				print("Submitting run {}/{}[{}] to slurm partition '{}'".format(
-						run.experiment.display_name, run.instance.shortname, run.repetition, self.queue))
+				print(self._submit_print_messsage(run, queue=True))
 			else:
-				print("Submitting run {}/{}[{}] to default slurm partition".format(
-						run.experiment.display_name, run.instance.shortname, run.repetition))
+				print(self._submit_print_messsage(run, queue=False))
 
 		process = subprocess.Popen(sbatch_args, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 		out, _ = process.communicate(sbatch_script.encode())  # Assume UTF-8 encoding here.

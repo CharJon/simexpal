@@ -20,6 +20,9 @@ class SgeLauncher(common.Launcher):
 	def submit_multiple(self, config, runs):
 		self._do_submit(config, False, runs)
 
+	def _submit_print_messsage(self, run):
+		return f"Launching run {run.display_name} on SGE queue '{self.queue}'"
+
 	def _do_submit(self, config, single_task, r):
 		util.try_mkdir(os.path.join(config.basedir, 'aux'))
 		util.try_mkdir(os.path.join(config.basedir, 'aux/_sge'))
@@ -35,8 +38,8 @@ class SgeLauncher(common.Launcher):
 			if not common.lock_run(r):
 				return
 			locked = [r]
-			print("Launching run {}/{}[{}] on SGE queue '{}'".format(
-					r.experiment.display_name, r.instance.shortname, r.repetition, self.queue))
+
+			print(self._submit_print_messsage(r))
 
 			invoke_args.extend(['--experiment', r.experiment.name,
 					'--instance', r.instance.shortname,
@@ -46,8 +49,8 @@ class SgeLauncher(common.Launcher):
 			for run in r:
 				if not common.lock_run(run):
 					continue
-				print("Launching run {}/{}[{}] on SGE queue '{}'".format(
-						run.experiment.display_name, run.instance.shortname, run.repetition, self.queue))
+				print(self._submit_print_messsage(run))
+
 				locked.append(run)
 
 			if not locked:
