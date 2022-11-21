@@ -1296,11 +1296,12 @@ class Run:
 		self.experiment = experiment
 		self.instance = instance
 		self.repetition = repetition
-    @property
-    def display_name(self):
-        return f"{self.experiment.display_name}/{self.instance.shortname}[{self.repetition}]"
 
-    @property
+	@property
+	def display_name(self):
+		return f"{self.experiment.display_name}/{self.instance.shortname}[{self.repetition}]"
+
+	@property
 	def config(self):
 		return self._cfg
 
